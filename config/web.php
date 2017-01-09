@@ -38,24 +38,48 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'google' => [
+                    'class' => 'yii\authclient\clients\Google',
+                    'clientId' => '317723105147-bjb0guut25k913jtfifpjtlnni9pa97g.apps.googleusercontent.com',
+                    'clientSecret' => 'MAOHGmEnlM5Aa0zjV6ED8RxI',
+                    'returnUrl' => 'http://ficdb.dev/site/auth?authclient=google',
+                ],
+            ],
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
+        'formatter' => [
+            'timeZone' => 'Asia/Manila',
+            'currencyCode' => 'PHP',
+        ],
+    ],
+    'modules' => [
+        'gridview' => [
+            'class' => '\kartik\grid\Module'
+        ],
+        'administrator' => [
+            'class' => 'app\modules\administrator\Module',
+        ],
     ],
     'params' => $params,
 ];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
+    /*$config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-    ];
+    ];*/
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [

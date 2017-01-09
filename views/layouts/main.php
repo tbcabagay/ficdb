@@ -6,10 +6,15 @@
 use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
+use app\assets\FontAwesomeAsset;
+use app\assets\CustomeTheme;
+use app\components\SbAdminSidebarWidget;
+use yii\bootstrap\Modal;
 
-AppAsset::register($this);
+CustomeTheme::register($this);
+FontAwesomeAsset::register($this);
+
+$identity = Yii::$app->user->identity;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -20,57 +25,79 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
+    <style>body{font-family: 'Roboto', sans-serif; font-weight: 300;}</style>
 </head>
 <body>
 <?php $this->beginBody() ?>
 
-<div class="wrap">
-    <?php
-    NavBar::begin([
-        'brandLabel' => 'My Company',
-        'brandUrl' => Yii::$app->homeUrl,
-        'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
-        ],
-    ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
-    ]);
-    NavBar::end();
-    ?>
+    <div id="wrapper">
+        <?php
+        NavBar::begin([
+            'brandLabel' => Yii::$app->params['appName'],
+            'brandUrl' => Yii::$app->homeUrl,
+            'renderInnerContainer' => false,
+            'options' => [
+                'class' => 'navbar-default navbar-static-top',
+                'style' => 'margin-bottom: 0;',
+            ],
+        ]);
+        echo Nav::widget([
+            'items' => [
+                [
+                    'label' => '<i class="fa fa-cog fa-fw"></i> Settings',
+                    'items' => [
+                        ['label' => 'Office', 'url' => ['office/index']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Program', 'url' => ['program/index']],
+                        ['label' => 'Course', 'url' => ['course/index']],
+                        '<li class="divider"></li>',
+                        ['label' => 'Designation', 'url' => ['designation/index']],
+                        ['label' => 'Faculty', 'url' => ['faculty/index']],
+                        '<li class="divider"></li>',
+                        ['label' => 'User', 'url' => ['user/index']],
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= $content ?>
+                    ],
+                ],
+                Yii::$app->user->isGuest ? '' : [
+                    'label' => '<i class="fa fa-user fa-fw"></i>',
+                    'items' => [
+                        ['label' => 'Profile', 'url' => ['user/profile', 'id' => $identity->id]],
+                        '<li class="divider"></li>',
+                        ['label' => 'Logout (' . $identity->email . ')', 'url' => ['/site/logout'], 'linkOptions' => ['data-method' => 'post']],
+                    ],
+                ],
+            ],
+            'encodeLabels' => false,
+            'options' => ['class' =>'navbar-top-links navbar-right'],
+        ]);
+
+        echo SbAdminSidebarWidget::widget([
+            'items' => [
+                Html::a('<i class="fa fa-dashboard fa-fw"></i> Dashboard', ['default/index']),
+                Html::a('<i class="fa fa-server fa-fw"></i> Computer Use', ['track-pc/index']),
+                Html::a('<i class="fa fa-cart-plus fa-fw"></i> Services', ['track-service/index']),
+            ],
+        ]);
+
+        NavBar::end();
+        ?>
+        
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <?= $content ?>
+            </div>
+        </div>
+
     </div>
-</div>
 
-<footer class="footer">
-    <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
-
-        <p class="pull-right"><?= Yii::powered() ?></p>
-    </div>
-</footer>
+<?php Modal::begin([
+    'size' => Modal::SIZE_LARGE,
+    'header' => '<span class="modal-header-content"></span>',
+    'clientOptions' => [
+        'backdrop' => 'static',
+    ],
+]);
+Modal::end(); ?>
 
 <?php $this->endBody() ?>
 </body>
