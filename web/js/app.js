@@ -7,6 +7,9 @@
         modalBody: '.modal-body',
         modalHeaderClass: '.modal-header-content',
         pjaxContainer: '#app-pjax-container',
+        addEducationalBgId: '#add-faculty-educational-bg',
+        addFacultyCourseId: '#add-faculty-course',
+        addNoticeId: '#add-notice',
         displayModal: function() {
             var content = $(this).attr('href');
 
@@ -20,6 +23,40 @@
         },
         reloadPjax: function() {
             $.pjax.reload({ container: util.pjaxContainer });
+        },
+        gridRowClick: function(e) {
+            var id = $(this).closest('tr').data('id');
+            if (e.target == this && id) {
+                util.addEducationalBg(id);
+                util.addFacultyCourse(id);
+                util.addNotice(id);
+            }
+        },
+        facultyButtonClick: function(button) {
+            var button = $(this);
+            if (button.is(':enabled')) {
+                location.href = button.val();
+            }
+        },
+        setFacultyLink: function(button, id) {
+            var button = button;
+            var href = button.data('value');
+            var link = href + '?faculty_id=' + id;
+            button.val(link);
+            button.prop('disabled', false);
+            button.on('click', util.facultyButtonClick);
+        },
+        addEducationalBg: function(id) {
+            var button = $(util.addEducationalBgId);
+            util.setFacultyLink(button, id);
+        },
+        addFacultyCourse: function(id) {
+            var button = $(util.addFacultyCourseId);
+            util.setFacultyLink(button, id);
+        },
+        addNotice: function(id) {
+            var button = $(util.addNoticeId);
+            util.setFacultyLink(button, id);
         },
     };
 
@@ -46,6 +83,7 @@
 
     $(document).on('beforeSubmit', '#app-form', form.submitModal);
     $(document).on('click', '.btn-modal', util.displayModal);
+    $(document).on('click', '#app-grid-faculty td', util.gridRowClick);
 })(jQuery);
 
 /*var myApp = {

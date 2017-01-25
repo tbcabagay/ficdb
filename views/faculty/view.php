@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use kartik\detail\DetailView;
+use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Faculty */
@@ -11,7 +12,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Faculties'), 'url' =
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="faculty-view">
-
+<!--
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
@@ -24,22 +25,54 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
+-->
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'designation_id',
+            [
+                'attribute' => 'id',
+                'label' => 'Faculty #',
+            ],
+            [
+                'attribute' => 'designation_id',
+                'value' => $model->designation->title,
+            ],
             'first_name',
             'last_name',
             'middle_name',
             'email:email',
-            'birthday',
+            'birthday:date',
             'tin_number',
             'nationality',
             'status',
-            'created_at',
+            'created_at:datetime',
+        ],
+        'hover' => true,
+        'mode' => DetailView::MODE_VIEW,
+        'panel' => [
+            'heading' => 'Faculty Details',
+            'type' => DetailView::TYPE_PRIMARY,
+            'headingOptions' => [
+                'template' => '{title}',
+            ],
         ],
     ]) ?>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'columns' => [
+            ['class' => 'kartik\grid\SerialColumn'],
+
+            'degree',
+            'school',
+            'date_graduate',
+        ],
+        'export' => false,
+        'toolbar' => false,
+        'panel' => [
+            'type' => GridView::TYPE_PRIMARY,
+            'heading' => 'Educational Background',
+        ],
+    ]); ?>
 
 </div>

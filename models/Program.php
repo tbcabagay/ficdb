@@ -38,8 +38,10 @@ class Program extends \yii\db\ActiveRecord
             [['office_id'], 'integer'],
             [['code'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 150],
+            [['code', 'name'], 'trim'],
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['name', 'filter', 'filter' => 'ucwords'],
+            ['code', 'unique'],
             [['office_id'], 'exist', 'skipOnError' => true, 'targetClass' => Office::className(), 'targetAttribute' => ['office_id' => 'id']],
         ];
     }

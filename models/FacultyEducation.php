@@ -31,11 +31,13 @@ class FacultyEducation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['faculty_id', 'degree', 'school', 'date_graduate'], 'required'],
+            [['degree', 'school', 'date_graduate'], 'required'],
             [['faculty_id'], 'integer'],
             [['degree'], 'string', 'max' => 100],
             [['school'], 'string', 'max' => 150],
             [['date_graduate'], 'string', 'max' => 20],
+            [['degree', 'school'], 'filter', 'filter' => 'ucwords'],
+            ['date_graduate', 'number', 'min' => 1920, 'max' => date('Y'), 'message' => 'Invalid date of graduate.'],
             [['faculty_id'], 'exist', 'skipOnError' => true, 'targetClass' => Faculty::className(), 'targetAttribute' => ['faculty_id' => 'id']],
         ];
     }
@@ -60,5 +62,13 @@ class FacultyEducation extends \yii\db\ActiveRecord
     public function getFaculty()
     {
         return $this->hasOne(Faculty::className(), ['id' => 'faculty_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->setAttribute('faculty_id', Yii::$app->request->get('faculty_id'));
+        }
+        return parent::beforeSave($insert);
     }
 }

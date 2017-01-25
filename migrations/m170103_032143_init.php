@@ -83,7 +83,7 @@ class m170103_032143_init extends Migration
             'name' => $this->string(50)->notNull(),
             'content' => $this->text()->notNull(),
             'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer(),
+            'updated_at' => $this->integer()->notNull(),
         ]);
 
         $this->createTable('{{%notice}}', [
@@ -91,13 +91,15 @@ class m170103_032143_init extends Migration
             'user_id' => $this->integer()->notNull(),
             'faculty_id' => $this->integer()->notNull(),
             'course_id' => $this->integer()->notNull(),
-            'template_id' => $this->integer()->notNull(),
+            'content' => $this->text()->notNull(),
+            'reference_number' => $this->char(7)->notNull(),
             'semester' => $this->char(1)->notNull(),
             'academic_year' => $this->char(9)->notNull(),
             'date_course_start' => $this->date()->notNull(),
             'date_final_exam' => $this->date()->notNull(),
             'date_submission' => $this->date()->notNull(),
-            'reference_number' => $this->string(7)->notNull(),
+            'created_at' => $this->integer()->notNull(),
+            'updated_at' => $this->integer()->notNull(),
         ]);
 
         $this->addForeignKey('fk-auth-user_id-user-id', '{{%auth}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
@@ -111,7 +113,6 @@ class m170103_032143_init extends Migration
         $this->addForeignKey('fk-notice-user_id-user-id', '{{%notice}}', 'user_id', '{{%user}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey('fk-notice-faculty_id-faculty-id', '{{%notice}}', 'faculty_id', '{{%faculty}}', 'id', 'CASCADE', 'CASCADE');
         $this->addForeignKey('fk-notice-course_id-course-id', '{{%notice}}', 'course_id', '{{%course}}', 'id', 'CASCADE', 'CASCADE');
-        $this->addForeignKey('fk-notice-template_id-template-id', '{{%notice}}', 'template_id', '{{%template}}', 'id', 'CASCADE', 'CASCADE');
     }
 
     public function down()
@@ -127,7 +128,6 @@ class m170103_032143_init extends Migration
         $this->dropForeignKey('fk-notice-user_id-user-id', '{{%notice}}');
         $this->dropForeignKey('fk-notice-faculty_id-faculty-id', '{{%notice}}');
         $this->dropForeignKey('fk-notice-course_id-course-id', '{{%notice}}');
-        $this->dropForeignKey('fk-notice-template_id-template-id', '{{%notice}}');
 
         $this->dropTable('{{%office}}');
         $this->dropTable('{{%user}}');

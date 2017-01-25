@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\DesignationSearch */
+/* @var $searchModel app\models\NoticeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Designations');
+$this->title = Yii::t('app', 'Notices');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="designation-index">
+<div class="notice-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -21,8 +21,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'kartik\grid\SerialColumn'],
 
             'id',
-            'abbreviation',
-            'title',
+            'user_id',
+            'faculty_id',
+            'course_id',
+            'content:ntext',
+            // 'reference_number',
+            // 'semester',
+            // 'academic_year',
+            // 'date_course_start',
+            // 'date_final_exam',
+            // 'date_submission',
+            // 'created_at',
+            // 'updated_at',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -40,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add Designation'), 
+                    'title' => Yii::t('app', 'Add Notice'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .

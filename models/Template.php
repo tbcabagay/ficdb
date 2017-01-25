@@ -3,6 +3,10 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "{{%template}}".
@@ -14,11 +18,12 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  *
- * @property Notice[] $notices
  * @property User $user
  */
 class Template extends \yii\db\ActiveRecord
 {
+    private static $_templates = [];
+
     /**
      * @inheritdoc
      */
@@ -33,7 +38,7 @@ class Template extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'name', 'content', 'created_at'], 'required'],
+            [['name', 'content'], 'required'],
             [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['content'], 'string'],
             [['name'], 'string', 'max' => 50],
@@ -59,16 +64,40 @@ class Template extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNotices()
-    {
-        return $this->hasMany(Notice::className(), ['template_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    public function beforeSave($insert)
+    {
+        if ($insert) {
+            $this->setAttribute('user_id', Yii::$app->user->identity->id);
+        }
+        return parent::beforeSave($insert);
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_at',
+                ],
+            ],
+        ];
+    }
+
+    public static function getTemplateList()
+    {
+        static::$_templates = ArrayHelper::map(static::find()->asArray()->all(),
+            'id',
+            function($model, $defaultValue) {
+                return Html::a($model['name'], ['/template/view', 'id' => $model['id']]);
+            }
+        );
+        return static::$_templates;
     }
 }

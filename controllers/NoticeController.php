@@ -3,21 +3,23 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Faculty;
-use app\models\FacultySearch;
+use app\models\Notice;
+use app\models\NoticeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
-use app\models\Designation;
-use app\models\FacultyEducationSearch;
+use app\models\NoticeForm;
+use app\models\Faculty;
+use app\models\Template;
+use app\models\FacultyCourse;
 
 /**
- * FacultyController implements the CRUD actions for Faculty model.
+ * NoticeController implements the CRUD actions for Notice model.
  */
-class FacultyController extends Controller
+class NoticeController extends Controller
 {
     /**
      * @inheritdoc
@@ -35,23 +37,22 @@ class FacultyController extends Controller
     }
 
     /**
-     * Lists all Faculty models.
+     * Lists all Notice models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new FacultySearch();
+        $searchModel = new NoticeSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'designations' => Designation::getDesignationList(),
         ]);
     }
 
     /**
-     * Displays a single Faculty model.
+     * Displays a single Notice model.
      * @param integer $id
      * @return mixed
      */
@@ -61,38 +62,22 @@ class FacultyController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $searchModel = new FacultyEducationSearch();
-        $dataProvider = $searchModel->faculty();
-
-        return $this->renderAjax('view', [
+        return $this->render('view', [
             'model' => $this->findModel($id),
-            'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Creates a new Faculty model.
+     * Creates a new Notice model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($faculty_id)
     {
-        if (!Yii::$app->request->isAjax) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        $this->findFacultyModel($faculty_id);
+        $model = new NoticeForm();
 
-        $model = new Faculty();
-
-        $model->designation_id = 1;
-        $model->first_name = 'tomas';
-        $model->last_name = 'cabagay';
-        $model->middle_name = 'bardenas';
-        $model->email = 'tomasjr.cabagay@upou.edu.ph';
-        $model->birthday = '1985-10-18';
-        $model->tin_number = 2;
-        $model->nationality = 'filipino';
-
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
 
@@ -100,21 +85,24 @@ class FacultyController extends Controller
                 'result' => 'success',
             ];
         } else {
-            return $this->renderAjax('create', [
+            return $this->render('create', [
                 'model' => $model,
-                'designations' => Designation::getDesignationList(),
+                'faculties' => Faculty::getFacultyList(),
+                'templates' => Template::getTemplateList(),
+                'facultyCourses' => FacultyCourse::getFacultyCourseList($faculty_id),
             ]);
         }
     }
 
     /**
-     * Updates an existing Faculty model.
+     * Updates an existing Notice model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
      */
     public function actionUpdate($id)
     {
+        $this->findFacultyModel($faculty_id);
         if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
@@ -129,15 +117,14 @@ class FacultyController extends Controller
                 'result' => 'success',
             ];
         } else {
-            return $this->renderAjax('update', [
+            return $this->render('update', [
                 'model' => $model,
-                'designations' => Designation::getDesignationList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing Faculty model.
+     * Deletes an existing Notice model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -150,15 +137,24 @@ class FacultyController extends Controller
     }
 
     /**
-     * Finds the Faculty model based on its primary key value.
+     * Finds the Notice model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Faculty the loaded model
+     * @return Notice the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Faculty::findOne($id)) !== null) {
+        if (($model = Notice::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+
+    protected function findFacultyModel($faculty_id)
+    {
+        if (($model = Faculty::findOne($faculty_id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -171,7 +167,7 @@ class FacultyController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model = new Faculty();
+        $model = new Notice();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

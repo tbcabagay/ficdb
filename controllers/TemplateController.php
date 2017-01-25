@@ -3,21 +3,19 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Faculty;
-use app\models\FacultySearch;
+use app\models\Template;
+use app\models\TemplateSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\web\Response;
 use kartik\form\ActiveForm;
-use app\models\Designation;
-use app\models\FacultyEducationSearch;
 
 /**
- * FacultyController implements the CRUD actions for Faculty model.
+ * TemplateController implements the CRUD actions for Template model.
  */
-class FacultyController extends Controller
+class TemplateController extends Controller
 {
     /**
      * @inheritdoc
@@ -35,43 +33,38 @@ class FacultyController extends Controller
     }
 
     /**
-     * Lists all Faculty models.
+     * Lists all Template models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new FacultySearch();
+        $searchModel = new TemplateSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'designations' => Designation::getDesignationList(),
         ]);
     }
 
     /**
-     * Displays a single Faculty model.
+     * Displays a single Template model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        if (!Yii::$app->request->isAjax) {
+        /*if (!Yii::$app->request->isAjax) {
             throw new NotFoundHttpException('The requested page does not exist.');
-        }
-
-        $searchModel = new FacultyEducationSearch();
-        $dataProvider = $searchModel->faculty();
+        }*/
 
         return $this->renderAjax('view', [
             'model' => $this->findModel($id),
-            'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Creates a new Faculty model.
+     * Creates a new Template model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
@@ -81,18 +74,9 @@ class FacultyController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model = new Faculty();
+        $model = new Template();
 
-        $model->designation_id = 1;
-        $model->first_name = 'tomas';
-        $model->last_name = 'cabagay';
-        $model->middle_name = 'bardenas';
-        $model->email = 'tomasjr.cabagay@upou.edu.ph';
-        $model->birthday = '1985-10-18';
-        $model->tin_number = 2;
-        $model->nationality = 'filipino';
-
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $response = Yii::$app->response;
             $response->format = Response::FORMAT_JSON;
 
@@ -102,13 +86,12 @@ class FacultyController extends Controller
         } else {
             return $this->renderAjax('create', [
                 'model' => $model,
-                'designations' => Designation::getDesignationList(),
             ]);
         }
     }
 
     /**
-     * Updates an existing Faculty model.
+     * Updates an existing Template model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -131,13 +114,12 @@ class FacultyController extends Controller
         } else {
             return $this->renderAjax('update', [
                 'model' => $model,
-                'designations' => Designation::getDesignationList(),
             ]);
         }
     }
 
     /**
-     * Deletes an existing Faculty model.
+     * Deletes an existing Template model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -150,15 +132,15 @@ class FacultyController extends Controller
     }
 
     /**
-     * Finds the Faculty model based on its primary key value.
+     * Finds the Template model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Faculty the loaded model
+     * @return Template the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Faculty::findOne($id)) !== null) {
+        if (($model = Template::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -171,7 +153,7 @@ class FacultyController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model = new Faculty();
+        $model = new Template();
 
         if ($model->load(Yii::$app->request->post())) {
             $response = Yii::$app->response;

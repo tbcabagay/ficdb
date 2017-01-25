@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%faculty}}".
@@ -29,6 +30,8 @@ use yii\behaviors\TimestampBehavior;
 class Faculty extends \yii\db\ActiveRecord
 {
     const STATUS_ACTIVE = 10;
+
+    private static $_faculties = [];
 
     /**
      * @inheritdoc
@@ -162,5 +165,11 @@ class Faculty extends \yii\db\ActiveRecord
         if (!in_array($userDomain, $validDomains)) {
             $this->addError($attribute, 'Email domain is not valid.');
         }
+    }
+
+    public static function getFacultyList()
+    {
+        static::$_faculties = ArrayHelper::map(static::find()->asArray()->all(), 'id', 'name');
+        return static::$_faculties;
     }
 }

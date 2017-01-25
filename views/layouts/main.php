@@ -52,9 +52,9 @@ $identity = Yii::$app->user->identity;
                         ['label' => 'Course', 'url' => ['course/index']],
                         '<li class="divider"></li>',
                         ['label' => 'Designation', 'url' => ['designation/index']],
-                        ['label' => 'Faculty', 'url' => ['faculty/index']],
                         '<li class="divider"></li>',
                         ['label' => 'User', 'url' => ['user/index']],
+                        '<li class="divider"></li>',
 
                     ],
                 ],
@@ -73,9 +73,9 @@ $identity = Yii::$app->user->identity;
 
         echo SbAdminSidebarWidget::widget([
             'items' => [
-                Html::a('<i class="fa fa-dashboard fa-fw"></i> Dashboard', ['default/index']),
-                Html::a('<i class="fa fa-server fa-fw"></i> Computer Use', ['track-pc/index']),
-                Html::a('<i class="fa fa-cart-plus fa-fw"></i> Services', ['track-service/index']),
+                Html::a('Notices', ['notice/index']),
+                Html::a('Faculties', ['faculty/index']),
+                Html::a('Templates', ['template/index']),
             ],
         ]);
 

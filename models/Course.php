@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%course}}".
@@ -18,6 +19,8 @@ use Yii;
  */
 class Course extends \yii\db\ActiveRecord
 {
+    private static $_courses = [];
+
     /**
      * @inheritdoc
      */
@@ -36,8 +39,10 @@ class Course extends \yii\db\ActiveRecord
             [['program_id'], 'integer'],
             [['code'], 'string', 'max' => 20],
             [['title'], 'string', 'max' => 150],
+            [['code', 'title'], 'trim'],
             ['code', 'filter', 'filter' => 'strtoupper'],
             ['title', 'filter', 'filter' => 'ucwords'],
+            ['code', 'unique'],
             [['program_id'], 'exist', 'skipOnError' => true, 'targetClass' => Program::className(), 'targetAttribute' => ['program_id' => 'id']],
         ];
     }
@@ -77,5 +82,11 @@ class Course extends \yii\db\ActiveRecord
     public function getNotices()
     {
         return $this->hasMany(Notice::className(), ['course_id' => 'id']);
+    }
+
+    public static function getCourseList()
+    {
+        static::$_courses = ArrayHelper::map(static::find()->asArray()->all(), 'id', 'title');
+        return static::$_courses;
     }
 }

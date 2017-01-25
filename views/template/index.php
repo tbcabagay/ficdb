@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use kartik\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\DesignationSearch */
+/* @var $searchModel app\models\TemplateSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Designations');
+$this->title = Yii::t('app', 'Templates');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="designation-index">
+<div class="template-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -21,8 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'kartik\grid\SerialColumn'],
 
             'id',
-            'abbreviation',
-            'title',
+            // 'user_id',
+            'name',
+            // 'content:ntext',
+            'created_at:datetime',
+            // 'updated_at',
 
             [
                 'class' => 'kartik\grid\ActionColumn',
@@ -40,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'toolbar' => [
             ['content' =>
                 Html::a('<i class="fa fa-plus"></i>', ['create'], [
-                    'title' => Yii::t('app', 'Add Designation'), 
+                    'title' => Yii::t('app', 'Add Template'), 
                     'class' => 'btn btn-success btn-modal',
                     'data-pjax' => 0,
                 ]) . ' ' .
